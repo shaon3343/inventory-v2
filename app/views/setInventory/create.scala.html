@@ -1,0 +1,19 @@
+@(ProductForm: Form[models.Product])
+@import helper._
+
+@main("Product Entry") {
+	
+       @form(routes.HRProductManage.save()) { 
+       		 @inputText(field=ProductForm("productName"), args='_label->"Product Name")
+       		 
+       		 @inputText(field=ProductForm("productCode"), args='_label->"product Code")
+       		 
+       		 @inputText(field=ProductForm("productPrice"), args='_label->"Product Price")
+       		 
+       		 @inputText(field=ProductForm("productQty"), args='_label->"Product Quantity ")
+       		 
+              <input type="submit" value="Create">
+            }
+                       
+     }
+

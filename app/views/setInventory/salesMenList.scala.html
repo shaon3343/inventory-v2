@@ -1,0 +1,32 @@
+@(sMen: List[models.SalesMen])
+@import helper._
+
+@main("List of Customer"){
+
+ 
+  	@if(flash.get("msg")){
+         	<span>@flash.get("msg")</span>
+     }
+  
+  <table>
+  <thead>
+    <tr>
+       <th>Customer Name</th>
+       <th>Customer Address</th>
+       <th>Customer Contact</th>
+       <th>Customer Total Due</th>
+     </tr>
+   </thead>
+    <tbody>
+    @for(man <- sMen) {
+      <tr>
+        <td><a href="@routes.HRProductManage.salesManShow(man.id)">@man.salesManName</a></td>
+        <td>@man.salesManAddress</td>
+        <td>@man.salesManContact</td>
+        <td>@man.salesManTotalDue</td>
+      </tr> 
+    }
+ </tbody>
+ </table>
+
+}      

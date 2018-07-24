@@ -1,0 +1,45 @@
+# Home page
+GET     /                           controllers.Application.index()
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
+POST	/submit-receipt		controllers.Application.submitReceipt()
+
+GET     /get-product-by-id  controllers.Application.getProductById()
+
+GET     /get-cust-by-id  controllers.Application.getCustomerbyId()
+
+POST  	/get-html-rows      controllers.Application.getHTML()
+
+GET  	/check-prod-qty		controllers.Application.checkProdQty()
+
+GET		/test-auto-suggest	controllers.Application.testAutoSuggest()
+
+#GET		/json-auto-suggest  controllers.Application.getProductList()
+
+POST		/json-auto-suggest  controllers.Application.getProductList()
+
+GET		/view-receipt			controllers.Application.createReceipt(rec: String)
+
+GET		/list-receipts			controllers.Application.listReceipt()
+#POST     /providejson                           controllers.Application.provideJSONData()
+
+#Product
+GET		/product/create						     controllers.HRProductManage.create()
+POST	/product/create						     controllers.HRProductManage.save()
+GET		/product/list							 controllers.HRProductManage.list()
+GET		/product/show/:id						 controllers.HRProductManage.show(id: Long)
+GET		/product/edit/:id						 controllers.HRProductManage.edit(id: Long)
+POST	/product/edit							 controllers.HRProductManage.update()
+GET	    /product/delete/:id					   	 controllers.HRProductManage.delete(id: Long)
+GET     /product/upload-xls						controllers.PushData.uploadPage()
+POST    /product/upload-xls						controllers.PushData.xlsupload()
+#Customer
+GET		/Customer/create						     controllers.HRProductManage.createSalesMan()
+POST	/Customer/create						     controllers.HRProductManage.saveSalesMan()
+GET		/Customer/list							 controllers.HRProductManage.salesMenList()
+GET		/Customer/show/:id						 controllers.HRProductManage.salesManShow(id: Long)
+GET		/Customer/edit/:id						 controllers.HRProductManage.salesManEdit(id: Long)
+POST	/Customer/edit							 controllers.HRProductManage.salesManupdate()
+GET	    /Customer/delete/:id					   	 controllers.HRProductManage.deleteSalesMan(id: Long)

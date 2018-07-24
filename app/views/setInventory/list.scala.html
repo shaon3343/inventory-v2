@@ -1,0 +1,32 @@
+@(products: List[models.Product])
+@import helper._
+
+@main("List of Products"){
+
+ 
+  	@if(flash.get("msg")){
+         	<span>@flash.get("msg")</span>
+     }
+  
+  <table>
+  <thead>
+    <tr>
+       <th>Product Name</th>
+       <th>Product Code</th>
+       <th>Product Price</th>
+       <th>Product Quantity</th>
+     </tr>
+   </thead>
+    <tbody>
+    @for(product <- products) {
+      <tr>
+        <td><a href="@routes.HRProductManage.show(product.id)">@product.productName</a></td>
+        <td>@product.productCode</td>
+        <td>@product.productPrice</td>
+        <td>@product.productQty</td>
+      </tr> 
+    }
+ </tbody>
+ </table>
+
+}      

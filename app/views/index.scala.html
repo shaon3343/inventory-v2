@@ -1,0 +1,523 @@
+@import helper._
+@import dummy.HTMLGenerator
+@import dummy.Jutility
+@main("Create Receipt") {
+    @form(routes.Application.submitReceipt()){
+	
+	<style>
+		input[type=button] {
+	    width: 130px;
+	    height: 30px;
+	    
+	    background-color: #006db2;
+	    border: medium none #006db2;
+	    color: white;
+	    font-family: Arial, Helvetica, sans-serif;
+	    font-size: 12px;
+	    font-weight: bold;
+	}
+	
+	</style>
+	
+	<div id="page-wrap">
+	
+		
+	<!-- 	<textarea id="header">INVOICE</textarea> -->
+		
+		<div id="identity">
+		
+            <textarea id="customer-title"></textarea>
+           
+            <div id="logo">
+
+        <!--      <div id="logoctr">
+                 <a href="javascript:;" id="change-logo" title="Change logo">Change Logo</a>
+                <a href="javascript:;" id="save-logo" title="Save changes">Save</a>
+                |
+                <a href="javascript:;" id="delete-logo" title="Delete logo">Delete Logo</a>
+                <a href="javascript:;" id="cancel-logo" title="Cancel changes">Cancel</a>
+              </div>
+ -->
+              <div id="logohelp">
+                <input id="imageloc" type="text" size="50" value="" /><br />
+                (max width: 540px, max height: 100px)
+              </div>
+              <img id="image" src="@routes.Assets.at("images/logo.jpg")"  alt="logo" />
+            </div>
+		
+		</div>
+		
+		<div style="clear:both"></div>
+		
+		<label> Customer : </label>
+		<select id="cust" name="cust" onchange="setCustomer(this)">
+		      <option class="blank" value="">-- Choose Customer--</option> 
+		    	@for((k,v) <- SalesMen.getSalesMenAsMap()){
+		      		<option value="@k">@v</option>
+		      }
+		  </select>
+		   
+		<div id="customer">
+					
+			 <textarea id="address"></textarea>
+
+            <table id="meta">
+                <tr>
+                    <td class="meta-head">Invoice #</td>
+                    <td><textarea>@Jutility.getNowDate()</textarea></td>
+                </tr>
+                <tr>
+
+                    <td class="meta-head">Date</td>
+                    <td><textarea id="date">December 15, 2009</textarea></td>
+                </tr>
+                <tr>
+                    <td class="meta-head">Previous Amount Due</td>
+                    <td><div class="due_prev" id="due_prev">$0</div></td>
+                </tr>
+                <tr>
+                    <td class="meta-head">Curent Amount Due</td>
+                    <td><div class="due">$0</div></td>
+                </tr>
+
+            </table>
+		
+		</div>
+		<span style="color:green"><h3> @flash.get("receiptSaved")</h3></span>
+		<table id="items">
+		
+		  <tr>
+		      <th>Product Name</th>
+		      <th>Product Code</th>
+		      <th>Unit Cost</th>
+		      <th>Quantity</th>
+		      <th>Price</th>
+		  </tr>
+		  <input type="hidden" id="receiptId" value="@Jutility.getNowDate()"/>
+		  	  
+		  <tr class="item-row">
+		      <td class="item-name"><div class="delete-wpr">		      
+		      <input id="prodSuggest" class="prodSuggest">
+ 			  <input type="hidden" id="prodSel"/>
+			<!--   <select id="prod" name="product.id" onchange="setPriceAndName(this)">
+		      <option class="blank" value="">-- Choose a Product --</option>
+		    	for((k,v) <- Product.getProductsAsMap()){
+		      		<option value="k">v</option>
+		      }
+		      </select>  -->
+		    
+		      <a class="delete" title="Remove row">X</a></div></td>
+		      <td class="description"><textarea id="desc"></textarea></td>
+		      <td><textarea class="cost" id="cost">$0</textarea></td>
+		      <td><textarea class="qty" onblur="checkQty(this)" id="qty">1</textarea></td>
+		      <td><span class="price">$0</span></td>
+		  </tr>
+		  <tr id="hiderow">
+		    <td colspan="5"><a id="addrow" href="javascript:;" title="Add a row">Add a row</a></td>
+		  </tr>
+		  
+		  <!--  <tr>
+		      <td colspan="2" class="blank"> </td>
+		      <td colspan="2" class="total-line">Subtotal</td>
+		      <td class="total-value"><div id="subtotal">$0</div></td>
+		  </tr> -->
+		  <tr>
+
+		      <td colspan="2" class="blank"> </td>
+		      <td colspan="2" class="total-line">Total</td>
+		      <td class="total-value"><div id="total">$0</div></td>
+		  </tr>
+		  <tr>
+		      <td colspan="2" class="blank"> </td>
+		      <td colspan="2" class="total-line">Previous Due</td>
+
+		      <td ><div class="due_prev" id="due_prev1">$0.00</div></td>
+		  </tr>
+		  
+		  <tr>
+
+		      <td colspan="2" class="blank"> </td>
+		      <td colspan="2" class="total-line">Grand Total</td>
+		      <td ><div class="gtotal" id="gtotal">$0</div></td>
+		  </tr>
+		  
+		  <tr>
+		      <td colspan="2" class="blank"> </td>
+		      <td colspan="2" class="total-line">Amount Paid</td>
+
+		      <td class="total-value"><textarea id="paid">$0.00</textarea></td>
+		  </tr>
+		  <tr>
+		      <td colspan="2" class="blank"> </td>
+		      <td colspan="2" class="total-line balance">Balance Due</td>
+		      <td class="total-value balance"><div class="due">$0</div></td>
+		  </tr>
+		
+		</table>
+		<input id="submit" style="display:none" type="button" value="submit" onclick="processAndSubmit()"/>
+		<div id="terms">
+		  <h5>Terms</h5>
+		  <textarea>NET 30 Days. Finance Charge of 1.5% will be made on unpaid balances after 30 days.</textarea>
+		</div>
+	
+	</div>
+	}
+	
+	<script>
+    
+  function JSONparse(data) {
+    var rows = [];
+    var rowData = null;
+    var dataLength = data.length;
+    for (var i = 0; i < dataLength; i++) {
+        rowData = data[i];
+        rows[i] = {
+        	id: rowData.id,
+            label: rowData.productName,
+            value: rowData.productPrice
+        };
+    }
+    return rows;
+}
+  
+  </script>
+	
+	<script>
+       
+    function setPriceAndName(selected){ 
+    	//alert(selected.value);
+    	
+    //	console.log($(selected).parent().parent().parent().find('textarea[id*="cost"]').val());
+    	$.ajax({
+            type : "GET",
+            url : "@routes.Application.getProductById()",
+            data : "productId="+selected.value,
+            dataType:'json',
+        	success: function(data){
+       
+        	//console.log(data);
+        		/*if(data=="NO" || data=="")
+        		{
+        			bind();
+        			$(selected).parent().parent().parent().find('textarea[id*="cost"]').val(0);
+        			$(selected).parent().parent().parent().find('textarea[id*="qty"]').val(0);
+        			$(selected).parent().parent().parent().find('textarea[id*="desc"]').val("");
+        			$(selected).parent().parent().parent().find('textarea[id*="cost"]').trigger('blur');
+        			bind();
+        			//var alert = "<span style="color:red"><h5> THIS PRODUCT IS NOT AVAILABLE </h5></span>"
+        			//	$(selected).parent().parent().parent().css('background','red');
+        		}
+        		else{ */
+	        		bind();
+	        		$(selected).parent().parent().parent().find('textarea[id*="cost"]').val(data.prodPrice);
+	        		$(selected).parent().parent().parent().find('textarea[id*="desc"]').val(data.prodCode);
+	        		$(selected).parent().parent().parent().find('textarea[id*="qty"]').val(0);
+	        		// $('table[id*="items"] tbody tr.item-row:last td textarea.cost:last').val(data);
+	        		//document.getElementById("cost").value = data;
+					//$("#cost").trigger('blur');
+				//	bind();
+					//  $('table[id*="items"] tbody tr.item-row:last td textarea#cost:last').trigger('blur');
+					$(selected).parent().parent().parent().find('textarea[id*="cost"]').trigger('blur');
+					  bind();
+			//	}
+			}
+        });
+    }
+    
+    
+    function checkQty(thisQty){
+    	//var selectedProd = $(thisQty).parent().parent().find('select option:selected').val();
+    	var selectedProd = $(thisQty).parent().parent().find('input[id*="prodSel"]').val();
+    	var qty = $(thisQty).val();
+    //	console.log("Selected Prod:"+selectedProd);
+    //	console.log("Qty :"+qty);
+    	
+    	$.ajax({
+            type : "GET",
+            url : "@routes.Application.checkProdQty()",
+            data : {prodId:selectedProd,prodQty:qty},
+            dataType:'json',
+        	success: function(data){
+        		//console.log(data);
+       			if(data.isAvailable){
+       				//console.log("available");
+       				$(thisQty).parent().parent().find('textarea[id*="cost"]').val(data.prodPrice);
+       				$(thisQty).parent().parent().find('textarea[id*="cost"]').trigger('blur');
+       				bind();
+       				$(thisQty).parent().parent().css('background-color','');
+       				
+       				$('div[id*="page-wrap"]').find('input[id*="submit"]').css('display','block');
+       				
+       			}
+       			else{
+       				//console.log("not Available");
+       				$(thisQty).parent().parent().find('textarea[id*="cost"]').val(0);
+       				$(thisQty).parent().parent().find('textarea[id*="qty"]').val(0);
+       				$(thisQty).parent().parent().find('textarea[id*="cost"]').trigger('blur');
+       				bind();
+        			$(thisQty).parent().parent().find('textarea[id*="desc"]').val("");
+        			$(thisQty).parent().parent().css('background-color','red');
+       			}
+       		}
+        });
+    	
+    }
+    
+    function processTableRow(){
+    	 jsonProdList = [];
+    	 $('table[id*="items"] tbody tr.item-row').each(function(index){
+    	 	
+    	 	prod={};
+    	
+    	 //	prod["prodId"]=$(this).find('select option:selected').val();
+    		prod["prodId"]=$(this).find('input[id*="prodSel"]').val();
+    	 
+    	 	prod["prodCost"]=$(this).find('textarea[id*="cost"]').val();
+    	 	
+    	 	prod["prodQty"]=$(this).find('textarea[id*="qty"]').val();
+    	 	
+    	 	prod["receiptId"]=$('table[id*="items"]').find('input[id*="receiptId"]').val();
+    	 	
+    	 	prod["paid"]=$('table[id*="items"]').find('textarea[id*="paid"]').val();
+    	 	
+    	 	prod["salesManId"]=$('div[id*="page-wrap"]').find('select option:selected').val();
+    	 	
+    	 //	console.log("in prod list"+prod);
+    	 	
+    	 	jsonProdList.push(prod); 
+    	 
+    	 	
+    	 /*	var prodRow = "";
+    	 	var prodId = $(this).find('select option:selected').val();
+    	 	var prodCost = $(this).find('textarea[id*="cost"]').val();
+    	 	var prodQty = $(this).find('textarea[id*="qty"]').val();
+    	 	prodRow = prodId+"#"+prodCost+"#"+prodQty;
+    	 	prodList = prodList + prodRow+"|"; */ 
+    	 	
+    	 });
+    	// console.log(jsonProdList);
+    	 return jsonProdList;
+    }
+    
+    function processAndSubmit(){
+    	 jsonProdList = processTableRow();
+    	 $.ajax({
+            url: '@routes.Application.submitReceipt()',
+            type: 'post',
+            contentType: "application/json",
+            data:  JSON.stringify(jsonProdList),
+            success: function (data) {
+            	if(data=="OK"){
+              		var receiptId=$('table[id*="items"]').find('input[id*="receiptId"]').val();
+    	 			var salesManId=$('div[id*="page-wrap"]').find('select option:selected').val();
+    	 			
+    	 			var url = "@routes.Application.createReceipt("")"+receiptId+"|"+salesManId;
+    	 			location.href=url;
+    	 			
+				   /* var xmlhttp;
+				
+				    if (window.XMLHttpRequest) {
+				        // code for IE7+, Firefox, Chrome, Opera, Safari
+				        xmlhttp = new XMLHttpRequest();
+				    } else {
+				        // code for IE6, IE5
+				        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+				    }
+				
+				 //   xmlhttp.onreadystatechange = callback;
+				
+				    xmlhttp.open("GET", url, true);
+				    xmlhttp.send(); */
+    	 			
+              		
+              	}
+            }
+           
+        });
+    	 
+    }
+     
+     /*function remove(event){
+    	 console.log("in remove"+event);
+    	 $(event).parents('.item-row').remove();
+     	//$(event).closest('tr').remove();
+   		update_total();
+    	if ($(".delete").length < 2) $(".delete").hide();
+     } */
+    
+        	  
+    $(document).ready(function() {
+    
+	/* auto suggest start */
+	var cache = {};
+  	var options = {
+	    minLength: 2,
+	      source: function( request, response ) {
+	        var term = request.term;
+	       /* if ( term in cache ) {
+	          response( cache[ term ] );
+	          return;
+	        }*/
+	        jsonProdList = processTableRow();
+	      //  console.log("prod Exist: "+ JSON.stringify(jsonProdList));
+	 		//var queryData = {term:request.term,exclude:jsonProdList};
+	        
+	 	/*	$.getJSON( "@routes.Application.getProductList()", queryData, function( data, status, xhr ) {
+	          var rows = JSONparse(data);
+	          cache[ term ] = rows;
+	         //console.log(rows);
+	          response( rows );
+	        }); */
+	        
+	        
+	 		$.ajax({
+	 	        type: "POST",
+	 	        url:"@routes.Application.getProductList()",
+	 	        data: {term:request.term,exclude:JSON.stringify(jsonProdList)},
+	 	        dataType: 'json',
+	 	        minLength: 2,
+	 	        delay: 100,
+	 	        success:function(data){
+	 	        	var rows = JSONparse(data);
+	 		        //  cache[ term ] = rows;
+	 		         //console.log(rows);
+	 		          response( rows );
+				
+				}
+	 	     });
+	        
+	        
+	        
+	      },
+      
+	      select: function(event, ui) {
+	      
+	            var focusedElement = $(this);
+	            focusedElement.val(ui.item.label);
+	            $(this).parent().find('input[id*="prodSel"]').val(ui.item.id);
+	            
+	            /* set price and name desc in other input field start */
+	            
+	        $.ajax({
+	            type : "GET",
+	            url : "@routes.Application.getProductById()",
+	            data : "productId="+ui.item.id,
+	            dataType:'json',
+	        	success: function(data){
+	        		//console.log(this);
+	            	bind();
+		        	$(focusedElement).parent().parent().parent().find('textarea[id*="cost"]').val(data.prodPrice);
+		        	$(focusedElement).parent().parent().parent().find('textarea[id*="desc"]').val(data.prodCode);
+		        	$(focusedElement).parent().parent().parent().find('textarea[id*="qty"]').val(0);
+		        	$(focusedElement).parent().parent().parent().find('textarea[id*="cost"]').trigger('blur');
+					bind();
+				
+				}
+        	});
+	            /*  Set price and name desc in other inptu end */
+	            	            
+	            /*console.log("ITEM VALUE: "+ui.item.value);
+	            console.log("ITEM ID: "+ui.item.id);*/
+				return false;
+	        
+	    },
+	    focus: function (event, ui) {
+	       this.value = ui.item.label;
+	       event.preventDefault(); // Prevent the default focus behavior.
+		}
+	};
+	var selector = 'input.prodSuggest';
+
+  	$(document).on('keydown.autocomplete', selector, function() {
+    	$(this).autocomplete(options);
+	});
+  
+  	$(document).on('click',".delete", function(event) {
+  		if($(".delete").length < 2){
+  			 $(".delete").hide();
+  		}
+  		else{
+  			$(event.target).parent().parent().parent().remove();
+  		}
+      	//$(event).closest('tr').remove();
+    	update_total();
+     	
+	});
+  
+	/* auto suggest end */
+    	  $('input').click(function(){
+    	    $(this).select();
+    	  });
+
+    	  $("#paid").blur(update_balance);
+    	   
+    	  $("#addrow").click(function(){
+    		  jsonProdList = processTableRow();
+    		  
+    		  $.ajax({
+    		  		type: 'post',
+              		contentType: "application/json",
+                    url : "@routes.Application.getHTML()",
+    	      		data:  JSON.stringify(jsonProdList),
+    	        	success: function(data){
+    	        		$(".item-row:last").after(data);    		    					
+    				}
+    		  });
+    	    
+    	    if ($(".delete").length > 0) $(".delete").show();
+    	    bind();
+    	  });
+    	  
+    	  bind();
+    	      	  
+    	  $("#cancel-logo").click(function(){
+    	    $("#logo").removeClass('edit');
+    	  });
+    	  $("#delete-logo").click(function(){
+    	    $("#logo").remove();
+    	  });
+    	  $("#change-logo").click(function(){
+    	    $("#logo").addClass('edit');
+    	    $("#imageloc").val($("#image").attr('src'));
+    	    $("#image").select();
+    	  });
+    	  $("#save-logo").click(function(){
+    	    $("#image").attr('src',$("#imageloc").val());
+    	    $("#logo").removeClass('edit');
+    	  });
+    	  
+    	  $("#date").val(print_today());
+    	  
+    	});
+    </script>
+    
+    <script>
+    function setCustomer(selected){
+    	//alert(selected.value);
+    	
+    	
+    	$.ajax({
+            type : "GET",
+            url : "@routes.Application.getCustomerbyId()",
+            data : "salesMenId="+selected.value,
+            dataType:'json',
+        	success: function(data){
+          		//	console.log(data);
+	        		$('table[id*="meta"] tbody div.due_prev').text("$"+roundNumber(data.salesManTotalDue,2));
+	        		$('table[id*="items"] tbody div.due_prev').text("$"+roundNumber(data.salesManTotalDue,2));
+	        	//	$('div#identity textarea#customer-title').text(data.salesManName);
+	        		$('div#customer textarea#address').text(data.salesManName+"\n"+data.salesManAddress+"\n"+data.salesManContact);
+	        		//document.getElementById("cost").value = data;
+					//$("#cost").trigger('blur');
+				//	bind();
+				//  $('table[id*="items"] tbody tr.item-row:last td textarea#cost:last').trigger('blur');
+			//	$(selected).parent().parent().parent().find('textarea[id*="cost"]').trigger('blur');
+				//	  bind();
+			
+			}
+        });
+    	
+    }
+    
+    </script>
+}

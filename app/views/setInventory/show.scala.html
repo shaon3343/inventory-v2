@@ -1,0 +1,19 @@
+@(product: models.Product)
+
+@import helper._
+
+@main("Product"){
+
+  <table>
+    <tr> <th>Product Name</th> <td>@product.productName</td> </tr>
+    <tr> <th >Product Code</th> <td>@product.productCode</td> </tr>
+    <tr> <th>Product Price</th> <td>@product.productPrice</td> </tr>
+    <tr> <th >Product Qty</th> <td>@product.productQty</td> </tr>
+  </table>
+   
+     @form(routes.HRProductManage.edit(product.id)) {
+		    <input type="submit" value="Edit">
+  		  }
+     }
+
+     

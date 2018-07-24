@@ -1,0 +1,82 @@
+@import helper._
+
+
+@main("Upload Excel"){
+		<script>
+			jQuery(document).ready(function() {
+
+				
+			});
+		</script>
+			
+<script>
+	jQuery(document).ready(function() {
+		prth_common.init();
+	
+	    if(!jQuery.browser.mobile){
+	      //  prth_datatable.dt1();
+	        prth_datatable.dt2();
+	        prth_datatable.ct();
+	        prth_datatable.dt_actions();
+			prth_datatable.dte_1();
+			prth_datatable.dte_2();
+	    }else{
+	        prth_datatable.mobile_dt();
+	    };
+	});
+</script>
+			<style>
+			.div_note {
+			    width: 320px;
+			    padding: 10px;
+			    border: 5px solid gray;
+			    margin: 0;
+			}
+			</style>
+			
+			
+			<h5 style="margin-left: 5px;">Upload Excel </h5>
+			<div class="div_note">
+			<b>N.B:</b> Upload Formatted Excel File containing <span style="color:red"> Product Name , Product Code, Product Price, Product Qty</span>
+			</div>
+			<br/>
+   			<br/>
+     @form(action=routes.PushData.xlsupload(), 'enctype -> "multipart/form-data") {	
+	    <table>
+	     
+	     <tr>
+         <label style="margin-right: 8px;">Select excel File</label><input type="file" name="uploaded_file">
+         @if(flash.get("FLASH_ERROR_UPLOAD")){
+				<span style="color: red" role="alert">
+					@flash.get("FLASH_ERROR_UPLOAD")
+				</span>
+			 }
+			 
+			@if(flash.get("FLASH_SUCCESS_UPLOAD")){
+			 <span  style="color: green"  role="alert">
+					@flash.get("FLASH_SUCCESS_UPLOAD")
+				</span><br/><br/>
+		   }   
+			 </tr>
+          <br/> <br/>
+          <tr><input type="submit" class="btn"value="Upload file"></tr>
+	    </table>
+	  }  
+	    
+	    
+	    <br/>
+	    <br/>
+	   
+      <link rel="stylesheet" media="screen" href="@routes.Assets.at("javascripts/pagination/demo_table_jui.css")">
+      <script src="@routes.Assets.at("javascripts/pagination/jquery-ui-1.8.18.custom.min.js")" type="text/javascript"></script>
+      <script src="@routes.Assets.at("javascripts/pagination/s_scripts.js")" type="text/javascript"></script>
+      <script src="@routes.Assets.at("javascripts/pagination/jquery.rwd-table.js")" type="text/javascript"></script>
+      <script src="@routes.Assets.at("javascripts/pagination/jquery.dataTables.min.js")" type="text/javascript"></script>
+      <script src="@routes.Assets.at("javascripts/pagination/dataTables.plugins.js")" type="text/javascript"></script>
+      <script src="@routes.Assets.at("javascripts/pagination/pertho.js")" type="text/javascript"></script>
+	 
+	 
+  
+}
+	
+ 

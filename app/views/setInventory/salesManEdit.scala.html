@@ -1,0 +1,16 @@
+@(salesManForm: Form[models.SalesMen])
+@import helper._
+
+@main("Edit Customer"){
+  
+  
+  @form(routes.HRProductManage.salesManupdate()) {
+  	  <input type="hidden" name="id" value=@salesManForm.get.id >
+  	  
+      @inputText(salesManForm("salesManName"), '_label->"Customer Name")</tr>
+      @inputText(salesManForm("salesManAddress"), '_label->"Customer Address")</tr>
+      @inputText(salesManForm("salesManContact"), '_label->"Customer Contact")</tr>
+      @inputText(salesManForm("salesManTotalDue"), '_label->"Customer Total Due")</tr>
+	  <input type="submit" value="Update">
+  }
+}

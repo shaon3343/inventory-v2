@@ -1,0 +1,19 @@
+@(salesMan: models.SalesMen)
+
+@import helper._
+
+@main("Customer"){
+
+  <table>
+    <tr> <th>Customer Name</th> <td>@salesMan.salesManName</td> </tr>
+    <tr> <th >Customer Address</th> <td>@salesMan.salesManAddress</td> </tr>
+    <tr> <th>Customer Contact</th> <td>@salesMan.salesManContact</td> </tr>
+    <tr> <th >Customer Total Due</th> <td>@salesMan.salesManTotalDue</td> </tr>
+  </table>
+   
+     @form(routes.HRProductManage.salesManEdit(salesMan.id)) {
+		    <input type="submit" value="Edit">
+  		  }
+     }
+
+     

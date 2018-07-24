@@ -1,0 +1,19 @@
+@(salesManForm: Form[models.SalesMen])
+@import helper._
+
+@main("Sales Man Entry") {
+	
+       @form(routes.HRProductManage.saveSalesMan()) { 
+       		 @inputText(field=salesManForm("salesManName"), args='_label->"Customer Name")
+       		 
+       		 @inputText(field=salesManForm("salesManAddress"), args='_label->"Customer Address")
+       		 
+       		 @inputText(field=salesManForm("salesManContact"), args='_label->"Customer Contact")
+       		 
+       		 @inputText(field=salesManForm("salesManTotalDue"), args='_label->"Customer Total Due ")
+       		 
+              <input type="submit" value="Create">
+            }
+                       
+     }
+

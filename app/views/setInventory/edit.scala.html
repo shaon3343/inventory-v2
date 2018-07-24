@@ -1,0 +1,16 @@
+@(ProductForm: Form[models.Product])
+@import helper._
+
+@main("Edit Product"){
+  
+  
+  @form(routes.HRProductManage.update()) {
+  	  <input type="hidden" name="id" value=@ProductForm.get.id >
+  	  
+      @inputText(ProductForm("productName"), '_label->"Product Name")</tr>
+      @inputText(ProductForm("productCode"), '_label->"Product Code")</tr>
+      @inputText(ProductForm("productPrice"), '_label->"Product Price")</tr>
+      @inputText(ProductForm("productQty"), '_label->"Product Quantity")</tr>
+	  <input type="submit" value="Update">
+  }
+}

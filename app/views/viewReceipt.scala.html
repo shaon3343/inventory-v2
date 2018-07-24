@@ -1,0 +1,151 @@
+@(message: String,receipt:dummy.DummyReceipt)
+
+@import helper._
+@import dummy.HTMLGenerator
+@import dummy.Jutility
+@main("Create Receipt") {	
+	<style>
+		input[type=button] {
+	    width: 130px;
+	    height: 30px;
+	    
+	    background-color: #006db2;
+	    border: medium none #006db2;
+	    color: white;
+	    font-family: Arial, Helvetica, sans-serif;
+	    font-size: 12px;
+	    font-weight: bold;
+	}
+	
+	#invoice{
+		
+    height: 15px;
+    width: 100%;
+    margin: 20px 0;
+    background: #222;
+    text-align: center;
+    color: white;
+    font: bold 15px Helvetica, Sans-Serif;
+    text-decoration: uppercase;
+    letter-spacing: 20px;
+    padding: 8px 0px;
+	}
+	
+	</style>
+	
+	<div id="page-wrap">
+
+		<div id="invoice"> INVOICE</div>
+		
+		<div id="identity">
+		
+        
+           
+            <div id="logo">
+
+              
+             <div id="logohelp">
+                <input id="imageloc" type="text" size="50" value="" /><br />
+                (max width: 540px, max height: 100px)
+              </div>
+              <img id="image" src="@routes.Assets.at("images/logo.jpg")" alt="logo" />
+            </div>
+		
+		</div>
+		
+		<div style="clear:both"></div>
+		
+		
+		<div id="customer">
+		<label> Customer : </label>
+					  <h4> @receipt.customerName </h4>
+			 @receipt.customerAddress ,<br/> @receipt.customerContact
+
+            <table id="meta">
+                <tr>
+                    <td class="meta-head">Invoice #</td>
+                    <td><div>@receipt.receiptId</div></td>
+                </tr>
+                <tr>
+
+                    <td class="meta-head">Date</td>
+                    <td><div id="date">@Jutility.formatDate(receipt.receiptDate)</div></td>
+                </tr>
+                <tr>
+                    <td class="meta-head">Previous Amount Due</td>
+                    <td><div class="due_prev" id="due_prev">$@receipt.prevDue</div></td>
+                </tr>
+                <tr>
+                    <td class="meta-head">Curernt Amount Due</td>
+                    <td><div class="due">$@receipt.dueNow</div></td>
+                </tr>
+
+            </table>
+		
+		</div>
+		
+		<table id="items">
+		
+		  <tr>
+		      <th>Product Name</th>
+		      <th>Product Code</th>
+		      <th>Unit Cost</th>
+		      <th>Quantity</th>
+		      <th>Price</th>
+		  </tr>
+		  
+		  @for(p<-receipt.prodList){
+		  <tr class="item-row">
+		      		      
+		      <td>@p.productName </td>
+		      <td class="description">@p.productCode</td>
+		      <td>$@p.productPrice</td>
+		      <td>@p.productQty</td>
+		      <td><span class="price">$@(p.productPrice*p.productQty)</span></td>
+		  </tr>
+		 } 
+	<!-- <tr>
+		      <td colspan="2" class="blank"> </td>
+		      <td colspan="2" class="total-line">Subtotal</td>
+		      <td class="total-value"><div id="subtotal">$receipt.totalPrice</div></td>
+		  </tr>  -->
+		  <tr>
+
+		      <td colspan="2" class="blank"> </td>
+		      <td colspan="2" class="total-line">Total</td>
+		      <td class="total-value"><div id="total">$@receipt.totalPrice</div></td>
+		  </tr>
+		  <tr>
+		      <td colspan="2" class="blank"> </td>
+		      <td colspan="2" class="total-line">Previous Due</td>
+
+		      <td class="total-value">$@receipt.prevDue</td>
+		  </tr>
+		  <tr>
+
+		      <td colspan="2" class="blank"> </td>
+		      <td colspan="2" class="total-line">Grand Total</td>
+		      <td ><div class="gtotal" id="gtotal">$@(receipt.totalPrice+receipt.prevDue)</div></td>
+		  </tr>
+		  
+		  <tr>
+		      <td colspan="2" class="blank"> </td>
+		      <td colspan="2" class="total-line">Amount Paid</td>
+
+		      <td class="total-value">$@receipt.amountPaid</td>
+		  </tr>
+		  <tr>
+		      <td colspan="2" class="blank"> </td>
+		      <td colspan="2" class="total-line balance">Balance Due</td>
+		      <td class="total-value balance"><div class="due">$@receipt.dueNow</div></td>
+		  </tr>
+		
+		</table>
+		<input id="submit" type="button" value="Print" onclick="printPage()"/>
+	</div>
+	<script>
+	function printPage(){
+		window.print();
+	}
+	</script>
+}
