@@ -46,10 +46,15 @@ public class PaymentHistory extends Model {
 
     public static PaymentHistory findbyCustAndReceipt(String rId, String custId) {
 
-        return Ebean.find(PaymentHistory.class).where()
-                .eq("receiptId", rId)
-                .eq("salesMan", Long.parseLong(custId))
-                .findSingleAttribute();
+        try {
+            return Ebean.find(PaymentHistory.class).where()
+                    .eq("receiptId", rId)
+                    .eq("salesMan", Long.parseLong(custId))
+                    .findSingleAttribute();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return new PaymentHistory();
     }
 
 }

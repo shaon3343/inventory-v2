@@ -68,6 +68,7 @@ public class PushData extends Controller {
                     }
                 }
             } catch (Exception e) {
+                e.printStackTrace();
                 isParsed = false;
             }
 
