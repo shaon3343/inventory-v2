@@ -1,7 +1,9 @@
 package models;
 
-import com.avaje.ebean.Expr;
-import com.avaje.ebean.Model;
+import io.ebean.Ebean;
+import io.ebean.Expr;
+import io.ebean.Finder;
+import io.ebean.Model;
 import util.AppConst;
 
 import javax.persistence.Column;
@@ -12,9 +14,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-/*import play.db.ebean.Model.Finder;
-import play.db.ebean.Model;*/
 
 @Entity
 @Table(name = "product")
@@ -47,12 +46,12 @@ public class Product extends Model {
     }
 
     public static List<Product> checkProdNameAndQty(String prodName, int qty) {
-        return find.where().eq("productName", prodName).ge("productQty", qty)
+        return Ebean.find(Product.class).where().eq("productName", prodName).ge("productQty", qty)
                 .findList();
     }
 
     public static List<Product> checkProdAndQty(int prodId, int qty) {
-        return find.where().eq("id", prodId).ge("productQty", qty).findList();
+        return Ebean.find(Product.class).where().eq("id", prodId).ge("productQty", qty).findList();
     }
 
     public static boolean checkProdAndQty(String prodId, String qty) {
@@ -66,13 +65,16 @@ public class Product extends Model {
     }
 
     public static Product findByIdAndQty(int id) {
-        return find.where().eq("id", id).gt("productQty", 0).findUnique();
+        return Ebean.find(Product.class).where()
+                .eq("id", id)
+                .gt("productQty", 0)
+                .findSingleAttribute();
 
     }
 
     public static Map<String, String> getProductsAsMap() {
         LinkedHashMap<String, String> prodList = new LinkedHashMap<String, String>();
-        for (Product prod : Product.find.orderBy("productCode").findList()) {
+        for (Product prod : Ebean.find(Product.class).orderBy("productCode").findList()) {
             prodList.put(prod.id.toString(), prod.productName);
         }
 
@@ -96,7 +98,7 @@ public class Product extends Model {
 
         LinkedHashMap<String, String> prodList = new LinkedHashMap<String, String>();
 
-        List<Product> pList = find.where().not(Expr.in("id", prodIdList))
+        List<Product> pList = Ebean.find(Product.class).where().not(Expr.in("id", prodIdList))
                 .findList();
 
         for (Product prod : pList) {
@@ -108,7 +110,7 @@ public class Product extends Model {
 
     public static List<Product> suggestProdList(String prodCode) {
 
-        List<Product> listProd = find.where()
+        List<Product> listProd = Ebean.find(Product.class).where()
                 .ilike("productCode", "%" + prodCode + "%").ge("productQty", 1)
                 .findList();
 
@@ -127,11 +129,11 @@ public class Product extends Model {
         }
         List<Product> listProd = new ArrayList<Product>();
         if (!prodIdList.isEmpty()) {
-            listProd = find.where().not(Expr.in("id", prodIdList))
+            listProd = Ebean.find(Product.class).where().not(Expr.in("id", prodIdList))
                     .ilike("productCode", "%" + prodCode + "%")
                     .ge("productQty", 1).findList();
         } else {
-            listProd = find.where().ilike("productCode", "%" + prodCode + "%")
+            listProd = Ebean.find(Product.class).where().ilike("productCode", "%" + prodCode + "%")
                     .ge("productQty", 1).findList();
         }
         return listProd;
@@ -153,7 +155,10 @@ public class Product extends Model {
 
     public static Product getProduct(Product pCode) {
         try {
-            return find.where().eq("productName", pCode.productName).eq("productCode", pCode.productCode).findUnique();
+            return Ebean.find(Product.class).where()
+                    .eq("productName", pCode.productName)
+                    .eq("productCode", pCode.productCode)
+                    .findSingleAttribute();
         } catch (Exception e) {
             return null;
         }

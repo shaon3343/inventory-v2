@@ -1,6 +1,9 @@
 package models;
 
-import com.avaje.ebean.Model;
+/*import com.avaje.ebean.Model;*/
+
+import io.ebean.Finder;
+import io.ebean.Model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,17 +12,15 @@ import javax.persistence.Table;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-/*import play.db.ebean.Model;
-import play.db.ebean.Model.Finder;*/
 
 @Entity
 @Table(name = "sales_man")
 public class SalesMen extends Model {
     private static Finder<Integer, SalesMen> find = new Finder<>(SalesMen.class);
-	
-	/*@OneToMany
-	@JoinColumn(name="cust_receipt_id", referencedColumnName="receipt_id")
-	public Receipts custReceiptId;*/
+
+    /*@OneToMany
+    @JoinColumn(name="cust_receipt_id", referencedColumnName="receipt_id")
+    public Receipts custReceiptId;*/
 	/*@Column(name = "cust_receipt_id")
 	public String custReceiptId;*/
     @Id
@@ -51,7 +52,7 @@ public class SalesMen extends Model {
         LinkedHashMap<String, String> salesMenList = new LinkedHashMap<String, String>();
 
         try {
-            for (SalesMen men : SalesMen.find.orderBy("salesManName").findList()) {
+            for (SalesMen men : SalesMen.find.all()) {
                 salesMenList.put(men.id.toString(), men.salesManName);
             }
         } catch (Exception e) {

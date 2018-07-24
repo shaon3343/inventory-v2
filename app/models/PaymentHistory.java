@@ -1,6 +1,8 @@
 package models;
 
-import com.avaje.ebean.Model;
+import io.ebean.Ebean;
+import io.ebean.Finder;
+import io.ebean.Model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,8 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
 import java.util.List;
-/*import play.db.ebean.Model;
-import play.db.ebean.Model.Finder;*/
 
 @Entity
 @Table(name = "payment_history")
@@ -46,7 +46,10 @@ public class PaymentHistory extends Model {
 
     public static PaymentHistory findbyCustAndReceipt(String rId, String custId) {
 
-        return find.where().eq("receiptId", rId).eq("salesMan", Long.parseLong(custId)).findUnique();
+        return Ebean.find(PaymentHistory.class).where()
+                .eq("receiptId", rId)
+                .eq("salesMan", Long.parseLong(custId))
+                .findSingleAttribute();
     }
 
 }

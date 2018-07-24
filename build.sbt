@@ -17,7 +17,5 @@ libraryDependencies ++= Seq(
   javaJdbc,
   "mysql" % "mysql-connector-java" % "5.1.22",
   "com.typesafe.play" %% "play-ebean" % "4.1.0",
-  evolutions,
-  "org.avaje.ebeanorm" % "avaje-ebeanorm-api" % "3.1.1",
-  "org.avaje.ebean" % "ebean" % "9.3.1"
+  evolutions
 )

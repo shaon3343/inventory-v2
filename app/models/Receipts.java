@@ -1,15 +1,14 @@
 package models;
 
-import com.avaje.ebean.Model;
-//import com.avaje.ebean.Finder;
+import io.ebean.Ebean;
+import io.ebean.Finder;
+import io.ebean.Model;
 import util.AppConst;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-//import play.db.ebean.Model;
 
 @Entity
 @Table(name = "receipts")
@@ -18,8 +17,6 @@ public class Receipts extends Model {
     private static final long serialVersionUID = 1L;
     private static Finder<Integer, Receipts> find = new Finder<>(Receipts.class);
 
-	/*@Column(name = "product_id")
-	public Long productId;*/
     @Id
     public Long id;
     @Column(name = "receipt_id")
@@ -32,8 +29,6 @@ public class Receipts extends Model {
     @Column(name = "sales_man_id")
     public Long salesMan;
 
-	/*@Column(name = "total_due")
-	public float totalDue;*/
     @Column(name = "sales_date")
     public Date salesDate;
     @Column(name = "total_price")
@@ -70,7 +65,7 @@ public class Receipts extends Model {
                 r.save();
 
                 p.productQty = p.productQty - qty;
-                p.update();
+                p.update(p);
 
             }
 
@@ -104,6 +99,6 @@ public class Receipts extends Model {
     }
 
     public static List<Receipts> findByReceiptId(String rId) {
-        return find.where().eq("receiptId", rId).findList();
+        return Ebean.find(Receipts.class).where().eq("receiptId", rId).findList();
     }
 }
