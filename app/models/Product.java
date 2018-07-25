@@ -68,7 +68,7 @@ public class Product extends Model {
         return Ebean.find(Product.class).where()
                 .eq("id", id)
                 .gt("productQty", 0)
-                .findSingleAttribute();
+                .findOne();
 
     }
 
@@ -158,7 +158,7 @@ public class Product extends Model {
             return Ebean.find(Product.class).where()
                     .eq("productName", pCode.productName)
                     .eq("productCode", pCode.productCode)
-                    .findSingleAttribute();
+                    .findOne();
         } catch (Exception e) {
             return null;
         }

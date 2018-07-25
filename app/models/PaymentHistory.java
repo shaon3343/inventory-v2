@@ -50,7 +50,7 @@ public class PaymentHistory extends Model {
             return Ebean.find(PaymentHistory.class).where()
                     .eq("receiptId", rId)
                     .eq("salesMan", Long.parseLong(custId))
-                    .findSingleAttribute();
+                    .findOne();
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
