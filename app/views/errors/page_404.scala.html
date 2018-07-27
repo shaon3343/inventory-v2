@@ -1,0 +1,25 @@
+<html lang="en">
+    <head>
+        <script type='text/javascript' src="@routes.Assets.at("javascripts/jquery-1.4.2.min.js")"></script>
+        <meta charset="UTF-8">
+        <title>404 </title>
+
+    </head>
+    <body>
+        <center>
+        <h1> 404</h1>
+        <h3> AAAAAAAAAAHhh!!! The page doesn't exist!
+            <p>Instead, You can hear this goat screaming like human! </p></h3>
+        <video id="video" width="400" loop="loop"
+        preload="auto" title="Video" controls>
+            <source src='@routes.Assets.at("video/The Screaming Sheep.mp4")' type="video/mp4">
+            Your browser does not support HTML5 video.
+        </video>
+        </center>
+    </body>
+    <script>
+        var video = document.getElementById("video");
+        video.autoplay = true;
+        video.load()
+    </script>
+</html>

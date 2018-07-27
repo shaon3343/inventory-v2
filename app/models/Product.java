@@ -164,4 +164,13 @@ public class Product extends Model {
         }
 
     }
+
+    public void insertProduct(ArrayList<String> content) {
+        Product p= new Product();
+        p.productName = content.get(0);
+        p.productCode = content.get(1);
+        p.productPrice = Float.parseFloat(content.get(2));
+        p.productQty = Float.parseFloat(content.get(3));
+        p.save();
+    }
 }

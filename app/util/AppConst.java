@@ -25,4 +25,6 @@ public class AppConst {
     public static final String ERROR_MESSAGE_ID_NOT_FOUND = "ID NOT FOUND";
     public static final String SUCCESSFUL_DELETE_MESSAGE = "DELETED SUCCESSFULLY";
     public static final String SUCCESS_MESSAGE = "SUCCESS";
+    public static final String XLSX = "xlsx";
+    public static final String XLS = "xls";
 }
